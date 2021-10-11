@@ -1,20 +1,50 @@
 import { Component } from 'react'
-import { View, Text, Textarea } from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
+import { inject, observer } from 'mobx-react';
 import Taro from '@tarojs/taro'
+import { UserStoreType } from '../../store/index';
 
 import './index.scss'
-
 
 const enum BTN_METHOD {
   LAY = 'LAY',
   TAKE = 'TAKE',
 };
 
-export default class Index extends Component {
+@inject('userInfo')
+@observer
+export default class Index extends Component<{
+  userInfo: UserStoreType
+}> {
+
+
+  state: State = {
+
+  };
 
   componentWillMount () { }
 
-  componentDidMount () { }
+  componentDidMount () {
+    if(Taro.getEnv() === Taro.ENV_TYPE.WEAPP) {
+      const self = this;
+
+      Taro.getStorage({
+        key: 'userInfo',
+        success (res) {
+          if(res.data) {
+            console.log(333, self.props.userInfo.prototype);
+
+            self.props?.userInfo.prototype.setUserInfo(JSON.parse(res.data));
+
+            self.setState({
+              userInfo: JSON.parse(res.data),
+              hasUserInfo: true,
+            });
+          }
+        }
+      })
+    }
+  }
 
   componentWillUnmount () { }
 
@@ -24,10 +54,27 @@ export default class Index extends Component {
 
   btnHandle(info) {
     const { method, label } = info;
+    if(!this.props.userInfo.prototype.userInfo) {
+      Taro.getUserProfile({
+        desc: '用于完善会员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+        success: (res) => {
+          try {
+            Taro.setStorageSync('userInfo', JSON.stringify(res))
+          } catch (e) {  }
+        },
+        fail: (err) => {
+          console.log('err', err);
+
+        }
+      })
+
+      return;
+    }
     if(method === BTN_METHOD.LAY) {
       Taro.navigateTo({
         url: '/pages/write/index'
       })
+
       return;
     }
     Taro.showToast({
@@ -82,4 +129,8 @@ export default class Index extends Component {
       </View>
     )
   }
+}
+
+interface State {
+
 }

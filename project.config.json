@@ -4,7 +4,7 @@
     "description": "盲盒交友",
     "appid": "wx878574be2e1e4cac",
     "setting": {
-        "urlCheck": true,
+        "urlCheck": false,
         "es6": false,
         "enhance": false,
         "postcss": false,
@@ -36,9 +36,9 @@
         "packNpmManually": false,
         "packNpmRelationList": [],
         "minifyWXSS": false,
-        "showES6CompileOption": false,
-        "skeletonGenerateFilesWithoutConfirm": true
+        "showES6CompileOption": false
     },
     "compileType": "miniprogram",
+    "libVersion": "2.19.6",
     "condition": {}
 }
